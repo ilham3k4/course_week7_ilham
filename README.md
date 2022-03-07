@@ -208,3 +208,155 @@ SELECT CONCAT('MY FAVORITE BOOK IS ', UPPER(title)) FROM books;
 
 SELECT CONCAT('MY FAVORITE BOOK IS ', LOWER(title)) FROM books;
 ```
+
+# Refining our Selection
+### DISTINCT
+The SELECT DISTINCT command returns only distinct (different) values in the result set. example :
+> SELECT DISTINCT author_lname FROM books;
+
+### Sorting Data with ORDER BY
+The ORDER BY keyword sorts the records in ascending order by default. To sort the records in descending order, use the DESC keyword. example :
+```
+SELECT released_year FROM books ORDER BY released_year DESC;
+ 
+SELECT released_year FROM books ORDER BY released_year ASC;
+
+SELECT title, author_fname, author_lname FROM books ORDER BY 2;
+```
+
+### LIMIT
+The SQL LIMIT clause restricts how many rows are returned from a query. 
+> SELECT * FROM table ORDER BY column DESC LIMIT X;
+
+This is the syntax for ordering a table in descending order and limiting the output of the query. We’ve used an ORDER BY clause to retrieve only the first X records.
+
+If you want to offset the LIMIT clause—change the starting point—you can specify a second parameter. Here is the syntax for an SQL LIMIT query that offsets a query:
+> SELECT column_name FROM table_name LIMIT starting_point, rows_to_return;
+
+The starting point is the offset for the query (where your results will start). The “rows_to_return” is how many rows you want your query to retrieve.
+
+### LIKE
+The SQL LIKE clause is used to compare a value to similar values using wildcard operators. There are two wildcards used in conjunction with the LIKE operator. You can use two wildcards with LIKE:
+- `%` - Represents zero, one, or multiple characters
+- `_` - Represents a single character (MS Access uses a question mark (?) instead)
+
+The following SQL selects all customers with a CustomerName starting with "a":
+> SELECT * FROM Customers WHERE CustomerName LIKE 'a%';
+
+The following SQL selects all customers with a CustomerName ending with "a":
+> SELECT * FROM Customers WHERE CustomerName LIKE '%a';
+
+The following SQL selects all customers with a CustomerName that have "or" in any position:
+> SELECT * FROM Customers WHERE CustomerName LIKE '%or%';
+
+The following SQL statement selects all customers with a CustomerName that starts with "a" and are at least 3 characters in length:
+> SELECT * FROM Customers WHERE CustomerName LIKE 'a__%';
+
+# The Magic of Aggregate Functions
+### COUNT Function
+The COUNT function returns the number of rows that matches a specified criterion. example :
+```
+SELECT COUNT(*) FROM books; <-- to count all column
+
+SELECT COUNT(DISTINCT author_fname) FROM books; <-- to count unique author_fname
+
+SELECT COUNT(DISTINCT author_lname, author_fname) FROM books; <-- to count unique author_lname and author_fname
+```
+
+### GROUP BY
+The GROUP BY statement groups rows that have the same values into summary rows, it summarizes or aggregates identical data into single rows. example :
+> SELECT author_lname, COUNT(*) FROM books GROUP BY author_lname;
+
+![group by1](img7.png)
+![group by2](img8.png)
+
+### MIN and MAX
+- The MIN function returns the smallest value of the selected column. 
+- The MAX function returns the largest value of the selected column.
+
+example :
+```
+SELECT MIN(released_year) FROM books; <-- to show the smallest released_year value
+
+SELECT MAX(pages) FROM books; <-- to show the largest pages value
+```
+
+you also use MIN and MAX function to search the data :
+```
+SELECT * FROM books WHERE pages = (SELECT Min(pages) FROM books); 
+ 
+SELECT title, pages FROM books WHERE pages = (SELECT Max(pages) FROM books); 
+```
+
+although you can also use combination of ORDER BY and LIMIT function to get the same result with faster fetch time :
+```
+SELECT title, pages FROM books ORDER BY pages ASC LIMIT 1;
+ 
+SELECT * FROM books ORDER BY pages DESC LIMIT 1;
+```
+
+### SUM Function
+The SUM function returns the total sum of a numeric column. Example :
+```
+SELECT SUM(pages) FROM books;
+
+SELECT author_fname,
+       author_lname,
+       Sum(released_year)
+FROM books
+GROUP BY
+    author_lname,
+    author_fname;
+```
+
+### AVG Function
+The AVG function returns the average value of a numeric column. Example :
+```
+SELECT AVG(released_year) FROM books;
+
+SELECT author_fname, author_lname, AVG(pages) FROM books
+GROUP BY author_lname, author_fname;
+```
+
+# The Power of Logical Operator
+In SQL, the comparison operators are useful to compare one expression with another expression using mathematical operators like equal `=`, greater than `>`, less than `<`, greater than or equal to `>=`, less than or equal to `<=`, not equal `<>`, etc. on SQL statements. In SQL, we have a different type of comparison operators available those are :
+
+- SQL Equal `=` Operator
+- SQL Not Equal `!=` or `<>` Operator
+- SQL Greater Than `>` Operator
+- SQL Less Than `<` Operator
+- SQL Greater Than or Equal To `>=` Operator
+- SQL Less Than or Equal To `<=` Operator
+- SQL Not Less Than `!<` Operator
+- SQL Not Greater Than `!>` Operator
+
+In SQL, logical operators are useful to perform some conditional and comparison checks in SQL statements. In logical operators we have a different type of operators available, those are :
+| OPERATOR  | DESCRIPTION |
+| ------------- | ------------- |
+| AND | The AND operator in SQL is used to compare data with more than one condition. If all the conditions return TRUE then only it will display records. |
+| OR | The OR operator in SQL is used to compare data with more than one condition. If either of the condition is TRUE it will return data. |
+| ALL | The ALL operator in SQL returns true when value matches all values in a single column set of values. It’s like AND operator it will compare the value against all values in column. |
+| ANY | The Any operator in SQL returns true when the value matches any value in single column set of values. It’s like an OR operator and it will compare value against any value in the column. |
+| LIKE | The LIKE operator in SQL is used to search for character string with the specified pattern using wildcards in a column. |
+| IN | The IN operator in SQL is used to search for specified value matches any value in set of multiple values. |
+| BETWEEN | The BETWEEN operator in SQL is used to get values within a range. |
+| EXISTS | The EXISTS operator in SQL is used to show the result if the subquery returns data. |
+| NOT | The NOT operator in SQL is a negate operator that means it will show data for opposite of conditions that we mentioned in SQL statement. |
+| SOME | The SOME operator in SQL is used to compare value with a single column set of values returned by subquery. SOME must match at least one value in a subquery and that value must be preceded by comparison operators. |
+
+The case statement in SQL returns a value on a specified condition.
+![case 1](img9.png)
+![case 2](img10.png)
+
+### Database Triggers
+A SQL trigger is a database object which fires when an event occurs in a database. We can execute a SQL query that will "do something" in a database when a change occurs on a database table such as a record is inserted or updated or deleted.
+
+![trigger 1](img11.png)
+![trigger 2](img12.png)
+
+Listing Triggers :
+> SHOW TRIGGERS;
+
+Removing Triggers
+> DROP TRIGGER trigger_name;
+
